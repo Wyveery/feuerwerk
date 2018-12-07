@@ -436,6 +436,8 @@ class Spaceship(VectorSprite):
     
     def _overwrite_parameters(self):
         self.friction = 0.995  #1.0 = no friction
+        self.last_strafe_time = -4
+        self.strafe_cooldown = 4
         self.radius = 8
         self.mass = 3000
     
@@ -459,7 +461,13 @@ class Spaceship(VectorSprite):
                        self.pos.x, self.pos.y), color=(c,c,c))
             
     def strafe_left(self):
-        v = pygame.math.Vector2(50, 0)
+		 # cooldown schon erreicht?
+        if self.age - self.last_strafe_time < self.strafe_cooldown:
+            print("Strafe is on cooldown")
+            return 
+        # set last_strafe_time
+        self.last_strafe_time = self.age
+        v = pygame.math.Vector2(75, 0)
         v.rotate_ip(self.angle + 90)   # strafe left!!
         self.move += v
         Explosion(self.pos, 
@@ -478,7 +486,13 @@ class Spaceship(VectorSprite):
                   
         
     def strafe_right(self):
-        v = pygame.math.Vector2(50, 0)
+		  # cooldown schon erreicht?
+        if self.age - self.last_strafe_time < self.strafe_cooldown:
+            print("du strafst zu oft, warte auf den cooldown")
+            return 
+        # set last_strafe_time
+        self.last_strafe_time = self.age
+        v = pygame.math.Vector2(75, 0)
         v.rotate_ip(self.angle - 90)   # strafe right!!
         self.move += v
         Explosion(self.pos, 
